@@ -28,5 +28,11 @@ namespace JwtAuthDotNet.DataAccessLayer.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
+
+        public async Task SaveRefreshTokenAsync(User user)
+        {
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+        }
     }
 }

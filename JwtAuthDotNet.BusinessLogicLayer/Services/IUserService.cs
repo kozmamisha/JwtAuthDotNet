@@ -11,6 +11,6 @@ namespace JwtAuthDotNet.BusinessLogicLayer.Services
     public interface IUserService
     {
         Task RegisterAsync(UserDto request);
-        Task<string?> LoginAsync(UserDto request);
+        Task<TokenResponseDto?> LoginAsync(UserDto request);
     }
 }

@@ -11,5 +11,6 @@ namespace JwtAuthDotNet.DataAccessLayer.Repositories
     {
         Task AddUser(User user);
         Task<User?> GetUserByUsername(string username);
+        Task SaveRefreshTokenAsync(User user);
     }
 }

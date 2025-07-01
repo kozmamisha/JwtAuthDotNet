@@ -19,11 +19,11 @@ namespace JwtAuthDotNet.Controllers
         }        
         
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<TokenResponseDto>> Login(UserDto request)
         {
-            var token = await userService.LoginAsync(request);
+            var response = await userService.LoginAsync(request);
 
-            return Ok(token);
+            return Ok(response);
         }
     }
 }
