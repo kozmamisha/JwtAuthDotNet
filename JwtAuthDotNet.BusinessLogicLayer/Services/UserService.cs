@@ -21,6 +21,7 @@ namespace JwtAuthDotNet.BusinessLogicLayer.Services
             var user = new User();
             var hashedPassword = new PasswordHasher<User>().HashPassword(user, request.Password);
 
+            user.Id = Guid.NewGuid();
             user.Username = request.Username;
             user.PasswordHash = hashedPassword;
 

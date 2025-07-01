@@ -1,6 +1,4 @@
 using JwtAuthDotNet.BusinessLogicLayer.Extensions;
-using JwtAuthDotNet.BusinessLogicLayer.Services;
-using JwtAuthDotNet.DataAccessLayer;
 using JwtAuthDotNet.DataAccessLayer.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JwtAuthDotNet.DataAccessLayer.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,6 +19,8 @@ namespace JwtAuthDotNet.DataAccessLayer.Extensions
                 options.UseNpgsql(configuration.GetConnectionString("UserDatabase"), 
                     b => b.MigrationsAssembly("JwtAuthDotNet.DataAccessLayer"));
             });
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
