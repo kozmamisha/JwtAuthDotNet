@@ -26,12 +26,12 @@ namespace JwtAuthDotNet.BusinessLogicLayer.Services
             user.Username = request.Username;
             user.PasswordHash = hashedPassword;
 
-            await userRepository.AddUser(user);
+            await userRepository.AddAsync(user);
         }
 
         public async Task<TokenResponseDto?> LoginAsync(UserDto request)
         {
-            var user = await userRepository.GetUserByUsername(request.Username) 
+            var user = await userRepository.GetUserByUsername(request.Username)
                 ?? throw new Exception("Wrong username or password");
 
             if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password)
@@ -40,13 +40,37 @@ namespace JwtAuthDotNet.BusinessLogicLayer.Services
                 throw new Exception("Wrong username or password");
             }
 
-            var response = new TokenResponseDto
+            return await CreateTokenResponse(user);
+        }
+
+        public async Task<TokenResponseDto?> RefreshTokensAsync(RefreshTokenRequestDto request)
+        {
+            var user = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken) 
+                ?? throw new UnauthorizedAccessException("User not found.");
+
+            return await CreateTokenResponse(user);
+        }
+
+        private async Task<TokenResponseDto> CreateTokenResponse(User user)
+        {
+            return new TokenResponseDto
             {
                 AccessToken = CreateToken(user),
                 RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
             };
+        }
 
-            return response;
+        private async Task<User?> ValidateRefreshTokenAsync(Guid userId, string refreshToken)
+        {
+            var user = await userRepository.GetUserById(userId) ?? throw new UnauthorizedAccessException("User not found.");
+
+            if (user.RefreshToken != refreshToken)
+                throw new UnauthorizedAccessException("Invalid refresh token.");
+
+            if (user.RefreshTokenExpiryTime < DateTime.UtcNow)
+                throw new UnauthorizedAccessException("Refresh token has expired.");
+
+            return user;
         }
 
         private string GenerateRefreshToken()
@@ -63,7 +87,7 @@ namespace JwtAuthDotNet.BusinessLogicLayer.Services
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await userRepository.SaveRefreshTokenAsync(user);
+            await userRepository.UpdateAsync(user);
             return refreshToken;
         }
 

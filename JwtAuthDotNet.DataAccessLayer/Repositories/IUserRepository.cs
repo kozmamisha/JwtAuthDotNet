@@ -9,8 +9,9 @@ namespace JwtAuthDotNet.DataAccessLayer.Repositories
 {
     public interface IUserRepository
     {
-        Task AddUser(User user);
+        Task AddAsync(User user);
         Task<User?> GetUserByUsername(string username);
-        Task SaveRefreshTokenAsync(User user);
+        Task<User?> GetUserById(Guid userId);
+        Task UpdateAsync(User user);
     }
 }

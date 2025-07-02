@@ -16,12 +16,20 @@ namespace JwtAuthDotNet.Controllers
             await userService.RegisterAsync(request);
 
             return Ok();
-        }        
-        
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<TokenResponseDto>> Login(UserDto request)
         {
             var response = await userService.LoginAsync(request);
+
+            return Ok(response);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenResponseDto>> RefreshTokens(RefreshTokenRequestDto request)
+        {
+            var response = await userService.RefreshTokensAsync(request);
 
             return Ok(response);
         }
